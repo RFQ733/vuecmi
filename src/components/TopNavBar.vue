@@ -20,8 +20,10 @@
                         <router-link to="/about">about</router-link>
                     </el-menu-item>
 
-                    
-                   <el-menu-item index="5">
+                    <el-menu-item index="5">
+                        <router-link to="/tool">tool</router-link>
+                     </el-menu-item>
+                   <el-menu-item index="6">
                         <router-link to="/download">download</router-link>
                    </el-menu-item>
                 </el-menu>

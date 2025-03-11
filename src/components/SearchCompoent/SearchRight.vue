@@ -42,7 +42,30 @@
             :data="CMDarr"
             bigName="predction NetWork"
         />
-      
+      <el-row>
+        
+        <el-col 
+       v-if="miRNAPairs.length"
+      :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <el-card class="prediction-card">
+          <template #header>
+            <div class="prediction-header">
+              <h3 class="prediction-title">
+                <i class="el-icon-data-analysis"></i>
+                Prediction Network
+              </h3>
+            </div>
+          </template>
+          <DetailCircRNARight
+            v-if="miRNAPairs.length"
+            :circRNAName="circRNA.circrna_id"
+            :pairs="miRNAPairs"
+          />
+        </el-card>
+      </el-col>
+
+
+      </el-row>
   </div>
 </div>
 </template>
@@ -51,13 +74,14 @@
 <script>
 import axios from 'axios';
 import VisCMD  from '../Echart/VisCMD.vue';
-
+import DetailCircRNARight from '../DetailCom/DetailCircRNARight.vue';
 import PredictionTable from "../Echart/PredictionTable.vue";
 
 export default {
     name: 'SearchRight',
     components: {
-        VisCMD,PredictionTable
+        VisCMD,PredictionTable,
+        DetailCircRNARight
     },
     props: {
         data: {
@@ -73,6 +97,11 @@ export default {
             selectedType: '',
             selectedModel: ''
      },
+     miRNAPairs: [],
+      circRNA: {
+        circrna_id: 'hsa_circ_0000001',
+        pairs: []
+      },
      CMDarr: []
 
 
@@ -100,6 +129,9 @@ export default {
       }).then(response => {
         console.log(response,"retrun CMDarr");
         this.CMDarr = response.data;
+        this.miRNAPairs = response.data;
+        this.circRNA = "hsa_circ_0000001";
+
 
       });
     },
