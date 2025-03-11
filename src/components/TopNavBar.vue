@@ -14,11 +14,15 @@
                     
                     </el-menu-item>
                     <el-menu-item index="3">
-                        <router-link to="/showcase">Showcase</router-link>
+                        <router-link to="/browser">browser</router-link>
+                   </el-menu-item>
+                    <el-menu-item index="4">
+                        <router-link to="/about">about</router-link>
                     </el-menu-item>
 
-                    <el-menu-item index="4">
-                        <router-link to="/browser">Browser</router-link>
+                    
+                   <el-menu-item index="5">
+                        <router-link to="/download">download</router-link>
                    </el-menu-item>
                 </el-menu>
             </el-col>
