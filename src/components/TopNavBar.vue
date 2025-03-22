@@ -11,7 +11,6 @@
                     </el-menu-item>
                     <el-menu-item index="2">
                         <router-link to="/search">search </router-link>
-                    
                     </el-menu-item>
                     <el-menu-item index="3">
                         <router-link to="/browser">browser</router-link>
@@ -25,6 +24,9 @@
                      </el-menu-item>
                    <el-menu-item index="6">
                         <router-link to="/download">download</router-link>
+                   </el-menu-item>
+                   <el-menu-item index="7">
+                        <router-link to="/top">Top30</router-link>
                    </el-menu-item>
                 </el-menu>
             </el-col>

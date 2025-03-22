@@ -9,6 +9,7 @@ import DetailView from '../components/DetailView.vue'
 import DetailCircRNA from '@/components/DetailCom/DetailCircRNA.vue'
 import DetailMiRNA from '../components/DetailCom/DetailMiRNA.vue'
 import ToolView from '@/components/ToolCom/ToolView.vue'
+import AboutView from '@/components/AboutCom/AboutView.vue'
 const routes = [
   {path: '/tool', component: ToolView},
   {path: '/detail/circRNA', component: DetailCircRNA},
@@ -18,7 +19,16 @@ const routes = [
   // { path: '/showcase', component: ShowCase },
   { path: '/search', component: SearchVue },
   {path: '/browser', component: BrowserView},
-  {path: '/download', component: DownloadView}
+  {path: '/download', component: DownloadView},
+  {path: '/about', component: AboutView},
+  {
+    path: '/disease-analysis',
+    component: () => import('../components/TopCom/DiseaseCircRelation.vue')
+  },
+  {
+    path: "/top",
+    component: () => import('../components/TopCom/TopView.vue')
+  }
 ]
 
 const router = createRouter({
