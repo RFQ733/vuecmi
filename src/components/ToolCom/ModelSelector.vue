@@ -29,7 +29,7 @@
         v-for="item in entityList"
         :key="item.value"
         :label="item.name"
-        :value="item.value"
+        :value="item"
       />
     </el-select>
     </div>
@@ -48,26 +48,41 @@ export default defineComponent({
       required: true
     },
     entity: {
-      type: String,
-      default: ''
+      type: Object,
+      default: () => ({ value: '', name: '' })
     }
   },
   emits: ['update:modelValue', 'update:entity'],
-  setup(props, { emit }) {
-    const models = [
-      { value: 'TransFusion', label: 'TransFusion (circRNA)' },
-      { value: 'LMSSNCDA', label: 'LMSSNCDA (circRNA)' },
-      { value: 'HGTMDA', label: 'HGTMDA (miRNA)' }
-    ]
-    
-    const selectedModel = computed({
-      get: () => props.modelValue,
-      set: value => emit('update:modelValue', value)
-    })
 
-    const selectedEntity = ref(props.entity)
-    const entityList = ref([])
-    const loading = ref(false)
+  //
+  setup(props, { emit }) {
+  const models = [
+    { value: 'TransFusion', label: 'TransFusion (circRNA)' },
+    { value: 'LMSSNCDA', label: 'LMSSNCDA (circRNA)' },
+    { value: 'HGTMDA', label: 'HGTMDA (miRNA)' }
+  ]
+  
+  // 模型选择 - 使用 computed 实现双向绑定
+  const selectedModel = computed({
+    get: () => props.modelValue,
+    set: value => emit('update:modelValue', value)
+  })
+
+  // 实体选择 - 同样使用 computed 实现双向绑定
+  const selectedEntity = computed({
+    get: () => props.entity,
+    set: value => {
+      // 找到选中的完整实体对象
+      const selected = entityList.value.find(item => item.value === value)
+      // selectedEntity.value = selected || { value, name: value }
+      emit('update:entity', selected || { value, name: value })
+    }
+  })
+
+  const entityList = ref([])
+  const loading = ref(false)
+  
+  
 
     const entityPlaceholder = computed(() => {
       return selectedModel.value === 'HGTMDA' 
@@ -105,9 +120,10 @@ export default defineComponent({
 
     const handleModelChange = () => {
       selectedEntity.value = ''
-      emit('update:entity', '')
+      emit('update:entity', { value: '', name: '' })
       loadEntities()
     }
+
 
     const handleEntityChange = (value) => {
       selectedEntity.value = value

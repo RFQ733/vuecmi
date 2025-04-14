@@ -38,7 +38,7 @@
 <!-- if here have the dataShowTable  -->
 
               <el-row>
-                <el-col :span="16"> 
+                <el-col > 
                   <div v-if="dataShowTable.length > 0" >
                     <VisCMD
                     v-if="dataShowTable.length > 0"
@@ -57,13 +57,13 @@
 
                 </div>
               </el-col>
-            <el-col :span="6">
+            <!-- <el-col :span="6">
               <SearchRight 
                 v-if="dataShowTable.length > 0"
                 :data="form"
               />
 
-            </el-col>
+            </el-col> -->
           </el-row>
     </el-main>
     <el-footer>
@@ -78,9 +78,9 @@ import axios from 'axios'
 import SearchShowVisualChart from './SearchCompoent/SearchShowVisualChart.vue';
 import TableViewCom from './Echart/TableViewCom.vue'
 import VisCMD from './Echart/VisCMD.vue'
-import SearchRight from './SearchCompoent/SearchRight.vue';
+// import SearchRight from './SearchCompoent/SearchRight.vue';
 export default {
-  components: { TopNavBar , SearchShowVisualChart,TableViewCom,VisCMD , SearchRight},
+  components: { TopNavBar , SearchShowVisualChart,TableViewCom,VisCMD },
   name: 'SearchVue',
   data() {
     return {

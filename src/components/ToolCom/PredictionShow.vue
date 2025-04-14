@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, watch } from 'vue'
+import { defineComponent, ref, computed, watch, toRefs } from 'vue'
 import axios from 'axios'
 import ModelSelector from './ModelSelector.vue'
 import EntityInfoCard from './EntityInfoCard.vue'
@@ -66,13 +66,37 @@ export default defineComponent({
     EntityInfoCard,
     AnalysisPanel
   },
-  setup() {
-    // 不再从父组件接收 props，改用本地状态维护
-    var selectedModel = ref('TransFusion')
-    var selectedEntity = ref({
-      value: '',
-      name: ''
+  props: {
+    // 父组件传入的选中的模型
+    selectedModelFromFahter: {
+      type: String,
+      
+      default: 'TransFusion'
+    },
+    // 父组件传入的选中的实体
+    selectedEntityFromFather: {
+      type: Object,
+      default: () => ({ value: '', name: '' })
+    }
+  },
+  
+  setup(props) {
+    // 正确解构 props
+    const { selectedModelFromFahter, selectedEntityFromFather } = toRefs(props)
+    
+    console.log('IN the prediction PAGE ​*******************')
+    console.log('selectedModelFromFahter:', selectedModelFromFahter.value)
+    console.log('selectedEntityFromFather:', selectedEntityFromFather.value)
+    console.log('selectedEntityFromFather.value:', selectedEntityFromFather.value.value)
+    console.log('selectedEntityFromFather.name:', selectedEntityFromFather.value.name)
+    
+    // 使用 ref 包装从 props 接收的值
+    var selectedModel = ref(selectedModelFromFahter.value)
+    var selectedEntity = ref({ 
+      value: selectedEntityFromFather.value.value,
+      name: selectedEntityFromFather.value.name
     })
+
 
     const loading = ref(false)
     const error = ref('')
@@ -89,18 +113,13 @@ export default defineComponent({
       associations: []
     })
 
-    // 统计信息
-    // const statistics = ref({
-    //   total: 0,
-    //   avgScore: 0,
-    //   maxScore: 0
-    // })
     const statistics = computed(() => {
       const total = currentEntity.value.associations?.length || 0
       const avgScore = currentEntity.value.associations?.reduce((acc, cur) => acc + cur.score, 0) / total || 0
       const maxScore = currentEntity.value.associations?.reduce((acc, cur) => Math.max(acc, cur.score), 0) || 0
       return { total, avgScore, maxScore }
     })
+
     // 实体类型计算属性
     const entityType = computed(() => {
       return selectedModel.value === 'HGTMDA' ? 'miRNA' : 'circRNA'
@@ -117,43 +136,33 @@ export default defineComponent({
 
     // 获取API地址
     const getPredictionAPI = () => {
-      // const apiMap = {
-      //   TransFusion: '/api/predict/transfusion',
-      //   LMSSNCDA: '/api/predict/lmssncda',
-      //   HGTMDA: '/api/predict/hgtmda'
-      // }
-      // return apiMap[selectedModel.value]
       return '/api/predict/get_mirnas_by_circrna.php'
     }
 
     // 获取预测数据
     const fetchPredictionData = async () => {
-
-        if (!selectedEntity.value) return
-        try {
-          loading.value = true
-          error.value = ''
-          const { data } = await axios.get(getPredictionAPI(), {
-            params: {
-              id: selectedEntity.value.value,
-              model: selectedModel.value
-            }
-          })
-          // 更新实体信息
-          console.log('预测数据:', data)
-          console.log('selectedEntity:', selectedEntity.value)
-
-          currentEntity.value = {
-            id: selectedEntity.value,
-            name: selectedEntity.value,
-            species: data.species,
-            chromosome: data.chromosome,
-            position: `${data.start}-${data.end}`,
-            associations: data.miRNAs || []
+      if (!selectedEntity.value.value) return
+      try {
+        loading.value = true
+        error.value = ''
+        const { data } = await axios.get(getPredictionAPI(), {
+          params: {
+            id: selectedEntity.value.value,
+            model: selectedModel.value
           }
+        })
 
-          
+        console.log('预测数据:', data)
+        console.log('selectedEntity:', selectedEntity.value)
 
+        currentEntity.value = {
+          id: selectedEntity.value.value,
+          name: selectedEntity.value.name,
+          species: data.species,
+          chromosome: data.chromosome,
+          position: `${data.start}-${data.end}`,
+          associations: data.miRNAs || []
+        }
       } catch (err) {
         error.value = '数据加载失败，请检查网络或稍后重试'
         console.error('API请求错误:', err)
@@ -162,11 +171,14 @@ export default defineComponent({
       }
     }
 
-    // 监听模型和实体变化，自动获取数据
+    // 监听模型和实体变化
     watch([selectedModel, selectedEntity], ([newModel, newEntity]) => {
-      if (newModel || newEntity) {
+      if (newModel && newEntity.value) {
         console.log('模型或实体变化:', newModel, newEntity)
-
+        // selectedEntity.value = { 
+        //   value: "circSamd4a", 
+        //   name: "circSamd4a"  // 如果没有 name，可以设为和 value 相同
+        // };
         fetchPredictionData()
       }
     }, { immediate: true })
@@ -174,7 +186,6 @@ export default defineComponent({
     // 显示详情
     const showDetail = (item) => {
       console.log('查看详情:', item)
-      // 可根据需求执行具体操作
     }
 
     return {

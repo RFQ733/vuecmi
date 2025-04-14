@@ -20,9 +20,14 @@
         </el-table-column>
         <el-table-column prop ="circrna_id" label="link">
             <template #default="scope">
-                <a :href="'/detail/circRNA?circrna_id='+ scope.row.circrna_id" 
+                <!-- entity=circRNAX and model=Transfuison -->
+                 <!-- /tool?entity=scope.row.circrna_id&model=Transfusion -->
+                <a :href="'/tool?entity=' + scope.row.circrna_id + '&model=TransFusion'"
                 target="_blank">Tool Link
                 </a>
+                <!-- <a :href="'/tool?'+ scope.row.circrna_id" 
+                target="_blank">Tool Link
+                </a> -->
             </template>
         </el-table-column>
         <el-table-column prop="experiment" label="experiment"></el-table-column>
